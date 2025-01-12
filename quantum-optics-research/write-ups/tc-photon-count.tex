@@ -1,0 +1,223 @@
+\documentclass[10pt]{article}
+\usepackage[a4paper]{geometry}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{textcomp}
+\usepackage[dutch]{babel}
+\usepackage{amsmath, amssymb}
+\usepackage{tcolorbox}
+\usepackage{xcolor}
+\usepackage{braket}
+\definecolor{darkgreen}{rgb}{0.0, 0.5, 0.0}
+
+% figure support
+\usepackage{import}
+\usepackage{xifthen}
+\pdfminorversion=7
+\usepackage{pdfpages}
+\usepackage{transparent}
+\newcommand{\incfig}[1]{%
+    \def\svgwidth{\columnwidth}
+    \import{./figures/}{#1.pdf_tex}
+}
+
+\pdfsuppresswarningpagegroup=1
+
+\usepackage{tikz}
+\usepackage{pgfplots}
+\usepackage{float}
+\pgfplotsset{compat = newest}
+\usepgfplotslibrary{colormaps}
+
+%Declarations
+\newtheorem{definition}{Definition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{proof}{Proof}
+
+
+% Define the 'example' tcolorbox
+\newtcolorbox{examplebox}[1][]{
+  colback=gray!5,         % Background color
+  colframe=darkgreen!75!black, % Frame color
+  fonttitle=\bfseries,
+  title=Example:~#1,
+}
+
+
+\begin{document}
+\title{analytical photon number for the tc model}
+\author{Ishaan Ganti}
+\date{1 november 2024}
+\maketitle
+
+\section{Analytical Treatment of the Tavis-Cummings Model}
+The Tavis-Cummings (TC) model is a simple theoretical framework for
+describing the interaction between $N$ two level systems (TLS) and an optical
+cavity mode. Its Hamiltonian is given by 
+\begin{gather}
+    H_{TC} = \frac{\omega_m}{2} \sum_{n=1}^{N}  \sigma_z^{n} + \omega_c 
+    a^{\dag }a + 
+    \frac{g}{\sqrt{N}} \sum_{n=1}^{N} (\sigma_{+}a + \sigma_{-}a^{\dag }) 
+\end{gather}
+where $\omega_m$ is the TLS transition frequency, $\omega_c$ is the cavity frequency, 
+and $\frac{g}{\sqrt{N} }$ gives the collective coupling strength. Clearly, this model
+conserves excitations. Thus, we can solve the model analytically within an excitation subspace.
+Consider the second excitation manifold, whose symmetrized bright basis states are given by 
+\begin{gather}
+    \ket{s_0, 2}, \, \ket{s_1, 1}, \,  \ket{s_2, 0} 
+\end{gather}
+
+\subsection{Subspace Hamiltonian}
+
+We proceed by deriving Hamiltonian matrix in this subspace. The diagonal elements must be given
+by $2\omega_c$, $\omega_c + \omega_m$, and $2\omega_m$, respectively. Additionally, since the
+first and third basis states aren't coupled directly, we must have that the upper right and lower
+left entries are 0. Solving for the coupling terms benefits from working
+in the angular momentum basis, with resulting Hamiltonian
+\begin{gather}
+    H_{TC} = \frac{\omega_m}{2} J_z + 
+    \omega_c a^{\dag }a + 
+    \frac{g}{\sqrt{N}} \left( J_{+}a + J_{-}a^{\dag } \right) 
+\end{gather}
+We calculate the following action
+\begin{gather}
+    J_{+}a \ket{s_1, 1} = J_{+}\ket{j = N / 2, m = -j + 1} 
+    \otimes a\ket{1}
+\end{gather}
+The coefficient attached to the TLS ensemble term is given by 
+\begin{gather*}
+    \sqrt{j(j+1) - m(m+1)} = 
+    \sqrt{j(j+1) - (1-j)(2-j)} = \sqrt{4j - 2} = \sqrt{2N - 2}   
+\end{gather*}
+So eq. (4) becomes
+\begin{gather}
+    \sqrt{2(N-1)} \ket{s_2, 0}  
+\end{gather}
+Similarly
+\begin{gather}
+    J_{-}a^{\dag } \ket{s_1, 1} =   
+    \sqrt{2N} \ket{s_0, 2} 
+\end{gather}
+Using these results, we can calculate the matrix elements at (0, 1) and
+(1, 2) as follows
+\begin{gather}
+    \braket{s_2, 0|H_{INT} | s_1, 1} = 
+    \frac{g}{\sqrt{N}}\sqrt{2(N-1)} 
+    \braket{s_2, 0|s_2, 0} = g\sqrt{\frac{2(N-1)}{N}} \\ 
+    \braket{s_0, 2| H_{INT}| s_1, 1} = 
+    \frac{g}{\sqrt{N}} \sqrt{2N}
+    \braket{s_0, 2| s_0, 2} = g\sqrt{2}  
+\end{gather}
+Put $\Omega_k = g\sqrt{2K / N}$; then, our Hamiltonian matrix becomes
+\begin{gather}
+    \begin{pmatrix} 2 \omega_c & \Omega_{N} & 0 \\
+        \Omega_{N} & \omega_c + \omega_m & \Omega_{N-1} \\
+    0 & \Omega_{N-1} & 2\omega_m \end{pmatrix} 
+\end{gather}
+
+\subsection{Resonant Solution}
+We limit our focus to a small number of TLS--specifically, we do not 
+take the thermodynamic limit in which $N \gg 1$, which would've allowed
+for the approximation $\Omega_{N-1} \approx \Omega_{N}$. This system 
+can still be solved exactly, but doing so is \textit{extremely} bashy and
+realistically requires the assistance of a symbolic calculator. However, 
+given resonance $(\omega_m = \omega_c)$, the computation becomes much 
+more managable. Additionally, the resonance dynamics are of significant
+interest. 
+
+\subsubsection{Eigenenergies \& Eigenstates}
+We have
+\begin{gather*} 
+    0 = \text{det} \left (\begin{pmatrix} 2 \omega & \Omega_{N} & 0 \\
+        \Omega_{N} & 2\omega & \Omega_{N-1} \\
+    0 & \Omega_{N-1} & 2\omega \end{pmatrix} - \lambda I\right ) = 
+            \begin{vmatrix} 2 \omega - \lambda & \Omega_{N} & 0 \\
+        \Omega_{N} & 2\omega - \lambda & \Omega_{N-1} \\
+    0 & \Omega_{N-1} & 2\omega - \lambda\end{vmatrix} \\ = 
+    (2\omega - \lambda)((2\omega - \lambda)^2 - \Omega_{N-1}^2) - 
+    \Omega_{N}(\Omega_{N}(2\omega -\lambda)) \\ = 
+    (2\omega - \lambda)[(2\omega -\lambda)^2 - \Omega_N^2 - 
+    \Omega_{N-1}^2]
+\end{gather*}
+This leads to three polariton solutions
+\begin{gather}
+    \lambda = 2\omega , \quad 
+    \lambda_{\pm} = 2\omega \pm \sqrt{\Omega_N^2 + \Omega_{N-1}^2} 
+\end{gather}
+Notably, the upper and lower polariton energies average to exactly the middle
+polariton energy. One may solve for the eigenstates analytically as well; 
+the results are (in ascending order) 
+\begin{gather}
+    \begin{pmatrix}
+        \sqrt{\frac{N}{N-1}} \\
+        -\sqrt{\frac{2N-1}{N-1}} \\
+        1
+    \end{pmatrix},
+    \quad
+    \begin{pmatrix}
+        -\sqrt{\frac{N-1}{N }} \\
+        0 \\
+        1
+    \end{pmatrix},
+    \quad
+    \begin{pmatrix}
+        \sqrt{\frac{N}{N-1}} \\
+        \sqrt{\frac{2N-1}{N-1}} \\
+        1
+    \end{pmatrix}
+\end{gather}
+
+\subsubsection{Cavity Photon Expectation}
+we aim to calculate the dynamics of the cavity photon expectation value. 
+it is clear that in this basis, the cavity number operator is given by
+\begin{gather}
+    \hat{n} = 
+    \begin{pmatrix} 2 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix} 
+\end{gather}
+additionally, any state in this basis can be written like
+\begin{gather}
+    \psi(t) = c_0 e^{-i\lambda_{-} t} \ket{\lambda_{-}} + c_1
+    e^{-i\lambda t} \ket{\lambda} + c_2 e^{-i\lambda_{+} t} \ket{\lambda_{+}} 
+\end{gather}
+we need the action of the number operator acting on each eigenstate. 
+for simplicity, we put $\alpha = \sqrt{N / (N-1)}$, $\beta = \sqrt{(2N-1) / (N-1)}$
+as well as normalization constants $\gamma_1$ and $\gamma_2$. 
+\begin{gather*}
+    \begin{pmatrix} 2 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+    \gamma_1 \begin{pmatrix} \alpha \\ -\beta \\ 1 \end{pmatrix} = \gamma_1
+    \begin{pmatrix} 2\alpha \\ - \beta \\ 0 \end{pmatrix} \\
+    \begin{pmatrix} 2 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+    \gamma_2 \begin{pmatrix} - 1 / \alpha \\ 0 \\ 1 \end{pmatrix} = \gamma_2
+    \begin{pmatrix} -2 / \alpha \\ 0 \\ 0 \end{pmatrix} \\
+        \begin{pmatrix} 2 & 0 & 0 \\ 0 & 1 & 0 \\ 0 & 0 & 0 \end{pmatrix}
+    \gamma_1 \begin{pmatrix} \alpha \\ \beta \\ 1 \end{pmatrix} = \gamma_1
+    \begin{pmatrix} 2\alpha \\ \beta \\ 0 \end{pmatrix} \\
+\end{gather*}
+consider an initial state with all excitations in the tls ensemble i.e. 
+$\ket{s_2, 0}$. the projection of this initial state onto the eigenbasis
+yields projection coefficients $c_0 = \gamma_1$, $c_1 = \gamma_2$, and
+$c_2 = \gamma_1$. with this, we may expand $\braket{\psi(t)|\hat{n} | \psi(t)}$
+to solve for $\left < \hat{n} \right >(t)$. The calculation
+is also quite bashy; hence, omitted, but it yields the following:
+\begin{gather}
+    \left < n \right > (t) = 
+    -\frac{2(N-1)(1-4N + \cos (\Delta \lambda \, t)) 
+    }{(2N-1)^2}
+    \sin^2 \left(\frac{\Delta \lambda \,  t}{2}\right)
+\end{gather}
+Where we've put $\Delta \lambda = \sqrt{\Omega_N^2 + \Omega_{N-1}^2}$. We
+can confirm this result numerically; consider $N = 2$ with coupling
+$g = 0.07$; this gives $\Delta \lambda \approx 0.12$. The resulting plot is
+
+\begin{center}    
+    \begin{figure} [H]
+        \includegraphics[width=\linewidth, height=8.1cm]{analytical-check.png}
+        \caption{Analytical expression and numerical results plotted on
+        the same graph.}
+    \end{figure}
+\end{center}
+Essentially an exact agreement. 
+
+\end{document}
+
